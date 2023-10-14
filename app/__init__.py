@@ -1,6 +1,7 @@
 import os
 from flask import Flask
 import logging
+from logging.handlers import RotatingFileHandler
 from flask_httpauth import HTTPTokenAuth
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
