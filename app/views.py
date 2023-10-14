@@ -3,7 +3,7 @@ import datetime
 import jwt
 from flask import request, jsonify
 from werkzeug.security import check_password_hash
-from app import app, db, SECRET_KEY, auth, bcrypt
+from app import app, db, auth, bcrypt
 from app.UserModel import User
 from app.utils import translate_content, translate_content_google
 from flask_cors import cross_origin
@@ -108,7 +108,7 @@ def generate_token():
     if user and bcrypt.check_password_hash(user.password, password):
         # Assuming SECRET_KEY is your secret key
         token = jwt.encode({'user_id': user.id, 'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=1)},
-                           SECRET_KEY, algorithm='HS256')
+                           app.config['SECRET_KEY'], algorithm='HS256')
         return jsonify({'token': token})
     return jsonify({'error': 'Invalid username or password'}), 400
 
@@ -116,7 +116,7 @@ def generate_token():
 @auth.verify_token
 def verify_token(token):
     try:
-        data = jwt.decode(token, SECRET_KEY, algorithms=['HS256'])
+        data = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])
         user = User.query.get(data['user_id'])
         if user:
             return user  # valid token and user found
