@@ -136,7 +136,7 @@ def register():
     if not data or 'username' not in data or 'password' not in data:
         abort(400, description='Missing username or password')
     username = data['username']
-    password = data['password']
+    password = str(data['password'])  # Convert password to string
     existing_user = User.query.filter_by(username=username).first()
     if existing_user:
         return jsonify({'message': 'User already exists!'}), 409
@@ -149,6 +149,7 @@ def register():
         db.session.rollback()
         return jsonify({'message': 'Database error', 'error': str(e)}), 500
     return jsonify({'message': 'New user created!'}), 201
+
 
 
 @app.errorhandler(401)
