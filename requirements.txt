@@ -1,5 +1,5 @@
 requests~=2.31.0
-flask~=3.0.0
+flask
 Flask-SQLAlchemy
 openai
 mysql-connector-python~=8.1.0
