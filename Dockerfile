@@ -1,20 +1,11 @@
-# Use an official Python runtime as a base image
+# Use the official Python image as the base image
 FROM python:3.8-slim-buster
 
-# Set the working directory in the container to /app
+# Set the working directory
 WORKDIR /app
 
-# Copy the current directory contents into the container at /app
-COPY ./app /app
+# Copy the current directory contents into the container
+COPY ./ /app
 
-# Install any needed packages specified in requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Make port 80 available to the world outside this container
-EXPOSE 80
-
-# Define environment variable
-ENV NAME World
-
-# Run app.py when the container launches
-CMD ["gunicorn", "app:app", "-b", "0.0.0.0:80", "--log-file", "-", "--access-logfile", "-", "--workers=3", "--keep-alive", "0"]
+# Install the required dependencies
+RUN pip install --no-cache-dir -r ./requirements.txt gunicorn
