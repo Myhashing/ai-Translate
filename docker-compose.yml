@@ -16,7 +16,7 @@ services:
 
   web:
     build: .
-    command: gunicorn -b 0.0.0.0:80 your_application:app
+    command: gunicorn -b 0.0.0.0:80 app:app
     ports:
       - "5000:80"
     depends_on:
