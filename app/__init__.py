@@ -1,5 +1,5 @@
 import os
-from flask import Flask
+from flask import Flask, request
 import logging
 from logging.handlers import RotatingFileHandler
 from flask_httpauth import HTTPTokenAuth
@@ -26,4 +26,16 @@ migrate = Migrate(app, db)
 auth = HTTPTokenAuth(scheme='Bearer')
 CORS(app, resources={r"/*": {"origins": "http://localhost"}})
 
+
+logging.basicConfig(filename='app.log', level=logging.DEBUG)
+
+@app.before_request
+def log_request_info():
+    app.logger.debug('Headers: %s', request.headers)
+    app.logger.debug('Body: %s', request.get_data())
+
+@app.after_request
+def log_response_info(response):
+    app.logger.debug('Response: %s', response.data)
+    return response
 from app import views

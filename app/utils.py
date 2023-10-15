@@ -11,9 +11,10 @@ from app.PostModel import Post
 api_key = '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'
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = "app/rahpax-74bd5d61fd29.json"
 
-
 # Instantiate a translation client
 translate_client = translate.Client()
+
+
 
 def translate_content(post_id, content):
     paragraphs = re.split(r'\n\n+', content)  # Split content into paragraphs at two or more newlines
@@ -30,9 +31,13 @@ def translate_content(post_id, content):
             data = {
                 'model': 'gpt-3.5-turbo',
                 'messages': [
-                {"role": "system", "content": "You are a helpful assistant. Translate the following English text to Persian, but do not translate anything enclosed within <code> and </code> tags."},
-                {"role": "user", "content": f"{re.sub(r'(```|```)', '<code>', paragraph)}"}
-            ]
+                    {"role": "system", "content": "You are a helpful assistant."
+                                                  "Translate the following English text to Persian, but do not "
+                                                  "translate"
+                                                  "anything enclosed within <code> and </code> tags."},
+
+                    {"role": "user", "content": f"{re.sub(r'(```|```)', '<code>', paragraph)}"}
+                ]
             }
 
             for attempt in range(max_retries):
@@ -43,7 +48,8 @@ def translate_content(post_id, content):
                     translated_paragraphs.append(translated_paragraph)
                     break  # Break out of the retry loop if the request is successful
                 elif response.status_code == 429:  # Rate limit error
-                    print(f'Rate limit error. Retrying in {retry_delay} seconds... (Attempt {attempt + 1}/{max_retries})')
+                    print(
+                        f'Rate limit error. Retrying in {retry_delay} seconds... (Attempt {attempt + 1}/{max_retries})')
                     time.sleep(retry_delay)  # Wait for the specified delay before retrying
                 else:
                     print(f'Error: {response.status_code}')
@@ -60,6 +66,7 @@ def translate_content(post_id, content):
         post.translated_content = translated_content
         post.status = 'Translated'
         db.session.commit()
+
 
 def translate_content_google(post_id, content):
     # Translate the content
